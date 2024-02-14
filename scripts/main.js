@@ -11,12 +11,14 @@ var DateTime = luxon.DateTime;
   const settings = await getSettings()
 
   if (settings.ck_gh_branch_create_console_copy) {
+    injectStyle('.css-1r3sre2:hover { rgba(9, 30, 66, 0.08) }')
+
     const branchCreatedListener = setInterval(() => {
       if (document.querySelector('.gitHubCreateBranch__header').innerHTML === 'GitHub branch created') {
 
         const newBranchName = document.querySelector('.gitHubCreateBranch__subHeader b').innerHTML
 
-        document.querySelector('#createBranchForm').insertAdjacentHTML('afterend', getInputCopyHTML(`git fetch && git checkout -b ${newBranchName}`))
+        document.querySelector('#createBranchForm').insertAdjacentHTML('afterend', getInputCopyHTML(`git fetch && git checkout ${newBranchName}`))
 
         clearInterval(branchCreatedListener)
       }
@@ -135,12 +137,18 @@ function getInputCopyHTML(text) {
                         color: var(--ds-text, #42526E) !important;
                     "
                     onclick="let inp =document.createElement('input');
-document.body.appendChild(inp)
-inp.value ='${text}'
-inp.select();
-document.execCommand('copy',false);
-inp.remove();"
-            >
+                      document.body.appendChild(inp)
+                      inp.value ='${text}'
+                      inp.select();
+                      document.execCommand('copy',false);
+                      inp.remove();
+                      document.querySelector('#svgCopy').style.display = 'none'
+                      document.querySelector('#svgCopied').style.display = 'block'
+                      setTimeout(() => {
+                        document.querySelector('#svgCopy').style.display = 'block'
+                        document.querySelector('#svgCopied').style.display = 'none'
+                      }, 500)
+                      ">
             <span
                     class="css-bwxjrz"
                     style="
@@ -161,7 +169,7 @@ inp.remove();"
                   aria-label="Copy icon"
                   class="css-snhnyn"
                   style="--icon-primary-color: currentColor; --icon-secondary-color: var(--ds-surface, #FFFFFF);">
-                <svg
+                <svg id="svgCopy"
                         width="24" height="24" viewBox="0 0 24 24" role="presentation"
                         style="display: inline-block; flex-shrink: 0; line-height: 1;">
                 <g fill="currentColor">
@@ -171,10 +179,21 @@ inp.remove();"
                 </path>
                 </g>
             </svg>
+            <svg id="svgCopied" width="24" height="24" style="display: none; color: rgb(54,179,126)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
             </span>
             </span>
             </button>
         </span>
 </div>
 `
+}
+
+function injectStyle(css) {
+  const styleElem =  document.querySelector('head style')
+
+  if(styleElem) {
+    styleElem.insertAdjacentHTML('beforeend', `\n${css}`)
+  } else {
+    document.querySelector('head').insertAdjacentHTML('beforeend', `<style>${css}</style>`)
+  }
 }

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Atlassian Enhancements",
-    "version": "1.0",
+    "version": "1.0.1",
     "description": "Provide additional functionality in Atlassian products",
     "icons": {
         "128": "images/logo-128.png"
@@ -21,7 +21,6 @@
                 "scripts/main.js"
             ],
             "matches": [
-                "file://*.*",
                 "https://*.atlassian.net/*",
                 "https://*.atlassian.com/*"
             ]
